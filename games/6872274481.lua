@@ -1,3 +1,4 @@
+--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local run = function(func)
 	func()
 end
@@ -666,7 +667,7 @@ run(function()
 		AnimationType = require(replicatedStorage.TS.animation['animation-type']).AnimationType,
 		AnimationUtil = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['game-core'].out['shared'].util['animation-util']).AnimationUtil,
 		AppController = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['game-core'].out.client.controllers['app-controller']).AppController,
-		BedBreakEffectMeta = require(replicatedStorage.TS.locker['bed-break-effect']['bed-break-effect-meta']).BedBreakEffectMeta,
+		BedBreakEffectMeta = require(replicatedStorage.TS.locker['bed-break-effect']['bed-break-effect-meta']).BreakBedEffectMeta,
 		BedwarsKitMeta = require(replicatedStorage.TS.games.bedwars.kit['bedwars-kit-meta']).BedwarsKitMeta,
 		BlockBreaker = Knit.Controllers.BlockBreakController.blockBreaker,
 		BlockController = require(replicatedStorage['rbxts_include']['node_modules']['@easy-games']['block-engine'].out).BlockEngine,
@@ -736,7 +737,6 @@ run(function()
 		ConsumeItem = debug.getproto(Knit.Controllers.ConsumeController.onEnable, 1),
 		ConsumeSoul = Knit.Controllers.GrimReaperController.consumeSoul,
 		ConsumeTreeOrb = debug.getproto(Knit.Controllers.EldertreeController.createTreeOrbInteraction, 1),
-		DepositPinata = debug.getproto(debug.getproto(Knit.Controllers.PiggyBankController.KnitStart, 2), 5),
 		DragonBreath = debug.getproto(Knit.Controllers.VoidDragonController.onKitLocalActivated, 5),
 		DragonEndFly = debug.getproto(Knit.Controllers.VoidDragonController.flapWings, 1),
 		DragonFly = Knit.Controllers.VoidDragonController.flapWings,
@@ -746,7 +746,6 @@ run(function()
 		GroundHit = Knit.Controllers.FallDamageController.KnitStart,
 		GuitarHeal = Knit.Controllers.GuitarController.performHeal,
 		HannahKill = debug.getproto(Knit.Controllers.HannahController.registerExecuteInteractions, 1),
-		HarvestCrop = debug.getproto(debug.getproto(Knit.Controllers.CropController.KnitStart, 4), 1),
 		KaliyahPunch = debug.getproto(Knit.Controllers.DragonSlayerController.onKitLocalActivated, 1),
 		MageSelect = debug.getproto(Knit.Controllers.MageController.registerTomeInteraction, 1),
 		MinerDig = debug.getproto(Knit.Controllers.MinerController.setupMinerPrompts, 1),
@@ -7390,41 +7389,6 @@ run(function()
 	LimitItem = Breaker:CreateToggle({
 		Name = 'Limit to items',
 		Tooltip = 'Only breaks when tools are held'
-	})
-end)
-	
-run(function()
-	local BedBreakEffect
-	local Mode
-	local List
-	local NameToId = {}
-	
-	BedBreakEffect = vape.Legit:CreateModule({
-		Name = 'Bed Break Effect',
-		Function = function(callback)
-			if callback then
-	            BedBreakEffect:Clean(vapeEvents.BedwarsBedBreak.Event:Connect(function(data)
-	                firesignal(bedwars.Client:Get('BedBreakEffectTriggered').instance.OnClientEvent, {
-	                    player = data.player,
-	                    position = data.bedBlockPosition * 3,
-	                    effectType = NameToId[List.Value],
-	                    teamId = data.brokenBedTeam.id,
-	                    centerBedPosition = data.bedBlockPosition * 3
-	                })
-	            end))
-	        end
-		end,
-		Tooltip = 'Custom bed break effects'
-	})
-	local BreakEffectName = {}
-	for i, v in bedwars.BedBreakEffectMeta do
-		table.insert(BreakEffectName, v.name)
-		NameToId[v.name] = i
-	end
-	table.sort(BreakEffectName)
-	List = BedBreakEffect:CreateDropdown({
-		Name = 'Effect',
-		List = BreakEffectName
 	})
 end)
 	
